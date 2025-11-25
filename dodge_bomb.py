@@ -33,7 +33,13 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
 
 def gameover(screen: pg.Surface) -> None:
     """
+    引数：画面Surface
+    戻り値：なし
     ゲームオーバー画面を表示する
+    ある程度透過させた黒いSurfaceを画面全体に貼り付け、
+    その中央に「Game Over」という文字とこうかとんの画像を
+    表示する
+    5秒間表示した後、関数を抜ける
     """
     gameover_surf = pg.Surface((WIDTH, HEIGHT))
     pg.draw.rect(gameover_surf, (0, 0, 0), (0, 0, WIDTH, HEIGHT))
