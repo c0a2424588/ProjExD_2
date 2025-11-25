@@ -55,7 +55,22 @@ def gameover(screen: pg.Surface) -> None:
     
     pg.display.update()
     time.sleep(5)
-    
+
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    """
+    10段階の大きさの爆弾Surfaceリストと加速度リストを返す
+    各Surfaceは黒背景を透過色に設定しておく
+    """
+    bb_imgs: list[pg.Surface] = []
+    for r in range(1, 11):
+        bb_img = pg.Surface((20 * r, 20 * r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10 * r, 10 * r), 10 * r)
+        bb_img.set_colorkey((0, 0, 0))  # 黒を透明に
+        bb_imgs.append(bb_img)
+    bb_accs: list[int] = [a for a in range(1, 11)]
+    return bb_imgs, bb_accs
+
+
 
 
 def main():
@@ -68,6 +83,9 @@ def main():
     bb_img = pg.Surface((20,20))  # 空のSurface
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 半径10の赤い円を描画
     bb_img.set_colorkey((0, 0, 0))  # 黒色を透明色に設定
+
+    bb_imgs, bb_accs = init_bb_imgs()
+    bb_img = bb_imgs[0]
     bb_rct = bb_img.get_rect() #爆弾rect
     bb_rct.center = random.randint(0, WIDTH),random.randint(0, HEIGHT)
     vx, vy = 5, 5
@@ -104,12 +122,24 @@ def main():
         if check_bound(kk_rct) != (True,True):  # 画面外なら
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])  # 移動をなかったことにする
         screen.blit(kk_img, kk_rct)
+
+        bb_img = bb_imgs[min(tmr // 500, 9)]
+        center = bb_rct.center
+        new_rect = bb_img.get_rect()
+        bb_rct.width = new_rect.width
+        bb_rct.height = new_rect.height
+        bb_rct.center = center
+
         yoko, tate = check_bound(bb_rct)
         if not yoko:
             vx *= -1
         if not tate:
             vy *= -1
-        bb_rct.move_ip(vx, vy)
+
+        avx = vx * bb_accs[min(tmr // 500, 9)]
+        avy = vy * bb_accs[min(tmr // 500, 9)]
+
+        bb_rct.move_ip(avx, avy)
         screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
