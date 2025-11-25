@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -27,6 +28,35 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
+def gameover(screen: pg.Surface) -> None:
+    """
+    ゲームオーバー画面を表示する
+    """
+    gameover_surf = pg.Surface((WIDTH, HEIGHT))
+    pg.draw.rect(gameover_surf, (0, 0, 0), (0, 0, WIDTH, HEIGHT))
+    
+    gameover_surf.set_alpha(200)
+    
+    font = pg.font.Font(None, 80)
+    text_surf = font.render("Game Over", True, (255, 255, 255))
+    text_rect = text_surf.get_rect()
+    text_rect.center = (WIDTH // 2, HEIGHT // 2)
+    gameover_surf.blit(text_surf, text_rect)
+
+    kk_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 0.9)
+    kk_rect = kk_img.get_rect()
+    kk_rect.center = (WIDTH // 3, HEIGHT // 2 )
+    kk_rect2 = kk_img.get_rect()
+    kk_rect2.center = (2*WIDTH // 3, HEIGHT // 2 )
+    gameover_surf.blit(kk_img, kk_rect)
+    gameover_surf.blit(kk_img, kk_rect2)
+    
+    screen.blit(gameover_surf, (0, 0))
+    
+    pg.display.update()
+    time.sleep(5)
+    
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -49,6 +79,7 @@ def main():
                 return
             
         if kk_rct.colliderect(bb_rct):  # こうかとんと爆弾が衝突したら
+            gameover(screen)
             print("ゲームオーバー")
             return
         
