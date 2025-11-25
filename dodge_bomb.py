@@ -6,12 +6,14 @@ import pygame as pg
 
 
 WIDTH, HEIGHT = 1100, 650
+
 DELTA = {
     pg.K_UP: (0, -5),
     pg.K_DOWN: (0, 5),
     pg.K_LEFT: (-5, 0),
     pg.K_RIGHT: (5, 0),
 }
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -27,6 +29,7 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     if rct.top < 0 or HEIGHT < rct.bottom:  # 横方向のはみだしチェック
         tate = False
     return yoko, tate
+
 
 def gameover(screen: pg.Surface) -> None:
     """
@@ -56,6 +59,7 @@ def gameover(screen: pg.Surface) -> None:
     pg.display.update()
     time.sleep(5)
 
+
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     """
     10段階の大きさの爆弾Surfaceリストと加速度リストを返す
@@ -69,8 +73,6 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
         bb_imgs.append(bb_img)
     bb_accs: list[int] = [a for a in range(1, 11)]
     return bb_imgs, bb_accs
-
-
 
 
 def main():
